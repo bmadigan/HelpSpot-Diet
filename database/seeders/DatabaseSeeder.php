@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +14,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $customers = \App\Models\Customer::factory()->count(15)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $tickets = \App\Models\Ticket::factory()
+            ->count(10)
+            ->recycle($customers)
+            ->create();
+
+        $tickets->each(function ($ticket) {
+            \App\Models\TicketReply::factory()
+                ->count(rand(0, 3))
+                ->for($ticket)
+                ->create();
+        });
+
+        \App\Models\Ticket::factory()
+            ->count(3)
+            ->recycle($customers)
+            ->slaAtRisk()
+            ->create();
+
+        \App\Models\Ticket::factory()
+            ->count(2)
+            ->recycle($customers->where('plan', 'Enterprise'))
+            ->create(['tier' => 'Enterprise']);
     }
 }
