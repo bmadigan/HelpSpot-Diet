@@ -18,25 +18,25 @@
     </flux:tabs>
 
     <flux:table>
-        <flux:columns>
-            <flux:column>Subject</flux:column>
-            <flux:column>Requester</flux:column>
-            <flux:column>Tier</flux:column>
-            <flux:column>Status</flux:column>
-            <flux:column>Last Reply</flux:column>
-            <flux:column>Actions</flux:column>
-        </flux:columns>
+        <flux:table.columns>
+            <flux:table.column>Subject</flux:table.column>
+            <flux:table.column>Requester</flux:table.column>
+            <flux:table.column>Tier</flux:table.column>
+            <flux:table.column>Status</flux:table.column>
+            <flux:table.column>Last Reply</flux:table.column>
+            <flux:table.column>Actions</flux:table.column>
+        </flux:table.columns>
 
-        <flux:rows>
+        <flux:table.rows>
             @forelse($this->tickets as $ticket)
-                <flux:row :key="$ticket->id" wire:key="ticket-{{ $ticket->id }}">
-                    <flux:cell>
+                <flux:table.row :key="$ticket->id" wire:key="ticket-{{ $ticket->id }}">
+                    <flux:table.cell>
                         <div class="font-medium">{{ $ticket->subject }}</div>
-                    </flux:cell>
-                    <flux:cell>
+                    </flux:table.cell>
+                    <flux:table.cell>
                         <div>{{ $ticket->requester_email }}</div>
-                    </flux:cell>
-                    <flux:cell>
+                    </flux:table.cell>
+                    <flux:table.cell>
                         @if($ticket->tier)
                             <flux:badge :color="$ticket->tier->color()">
                                 {{ $ticket->tier->value }}
@@ -44,16 +44,16 @@
                         @else
                             <span class="text-gray-400">Unknown</span>
                         @endif
-                    </flux:cell>
-                    <flux:cell>
+                    </flux:table.cell>
+                    <flux:table.cell>
                         <flux:badge :color="$ticket->status->color()">
                             {{ $ticket->status->label() }}
                         </flux:badge>
-                    </flux:cell>
-                    <flux:cell>
+                    </flux:table.cell>
+                    <flux:table.cell>
                         {{ $ticket->last_public_reply_at?->diffForHumans() ?? 'Never' }}
-                    </flux:cell>
-                    <flux:cell>
+                    </flux:table.cell>
+                    <flux:table.cell>
                         <flux:button
                             href="{{ route('tickets.show', $ticket) }}"
                             size="sm"
@@ -61,17 +61,17 @@
                         >
                             View
                         </flux:button>
-                    </flux:cell>
-                </flux:row>
+                    </flux:table.cell>
+                </flux:table.row>
             @empty
-                <flux:row>
-                    <flux:cell colspan="6">
+                <flux:table.row>
+                    <flux:table.cell colspan="6">
                         <div class="text-center py-8 text-gray-500">
                             No tickets found
                         </div>
-                    </flux:cell>
-                </flux:row>
+                    </flux:table.cell>
+                </flux:table.row>
             @endforelse
-        </flux:rows>
+        </flux:table.rows>
     </flux:table>
 </div>
