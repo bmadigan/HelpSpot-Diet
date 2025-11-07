@@ -5,6 +5,7 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+/.claude
 /.fleet
 /.idea
 /.nova
@@ -16,6 +17,7 @@
 /public/build
 /public/hot
 /public/storage
+/resources/views/components
 /storage/*.key
 /storage/pail
 /vendor
