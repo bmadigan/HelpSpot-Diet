@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <link rel="icon" href="https://fav.farm/🔥" />
+
         <title>{{ $title ?? 'HelpSpot Diet' }}</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -12,13 +14,13 @@
     <body class="min-h-screen bg-gray-50">
         <flux:header container>
             <flux:navbar>
-                <flux:navbar.brand href="{{ route('tickets.index') }}">
-                    <div class="text-xl font-bold text-gray-900">HelpSpot Diet</div>
-                </flux:navbar.brand>
+                <a href="{{ route('tickets.index') }}" class="text-xl font-bold text-gray-900">
+                    HelpSpot Diet
+                </a>
 
-                <flux:navbar.list>
-                    <flux:navbar.item href="{{ route('tickets.index') }}">Tickets</flux:navbar.item>
-                </flux:navbar.list>
+                <flux:navlist>
+                    <flux:navlist.item href="{{ route('tickets.index') }}">Tickets</flux:navlist.item>
+                </flux:navlist>
             </flux:navbar>
         </flux:header>
 
