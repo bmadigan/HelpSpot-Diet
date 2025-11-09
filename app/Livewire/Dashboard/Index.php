@@ -98,6 +98,46 @@ class Index extends Component
         return Ticket::query()->with('customer')->latest()->limit(8)->get();
     }
 
+    #[Computed]
+    public function trends(): array
+    {
+        $today = now()->toDateString();
+        $yesterday = now()->subDay()->toDateString();
+
+        $todayNew = Ticket::query()->whereDate('created_at', $today)->count();
+        $yesterdayNew = Ticket::query()->whereDate('created_at', $yesterday)->count();
+
+        $last7Start = now()->subDays(7)->startOfDay();
+        $prev7Start = now()->subDays(14)->startOfDay();
+        $prev7End = now()->subDays(7)->startOfDay();
+
+        $last7New = Ticket::query()->where('created_at', '>=', $last7Start)->count();
+        $prev7New = Ticket::query()->whereBetween('created_at', [$prev7Start, $prev7End])->count();
+
+        $last7Replies = TicketReply::query()->where('created_at', '>=', $last7Start)->count();
+        $prev7Replies = TicketReply::query()->whereBetween('created_at', [$prev7Start, $prev7End])->count();
+
+        $pct = function (int $current, int $previous): ?float {
+            if ($previous === 0) {
+                return $current > 0 ? 100.0 : null;
+            }
+
+            return round((($current - $previous) / $previous) * 100, 1);
+        };
+
+        return [
+            'todayNew' => $todayNew,
+            'yesterdayNew' => $yesterdayNew,
+            'todayVsYesterday' => $pct($todayNew, $yesterdayNew),
+            'last7New' => $last7New,
+            'prev7New' => $prev7New,
+            'last7VsPrev7' => $pct($last7New, $prev7New),
+            'last7Replies' => $last7Replies,
+            'prev7Replies' => $prev7Replies,
+            'replies7dChange' => $pct($last7Replies, $prev7Replies),
+        ];
+    }
+
     public function render()
     {
         return view('livewire.dashboard.index');
