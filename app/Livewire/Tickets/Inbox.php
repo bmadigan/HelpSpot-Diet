@@ -19,6 +19,21 @@ class Inbox extends Component
     #[Url]
     public string $filter = 'all';
 
+    public function mount(): void
+    {
+        $allowed = ['all', 'sla', 'no-update', 'vip'];
+
+        $filterFromUrl = request()->query('filter');
+        if (is_string($filterFromUrl) && in_array($filterFromUrl, $allowed, true)) {
+            $this->filter = $filterFromUrl;
+        }
+
+        $searchFromUrl = request()->query('search');
+        if (is_string($searchFromUrl)) {
+            $this->search = $searchFromUrl;
+        }
+    }
+
     #[Computed]
     public function tickets()
     {

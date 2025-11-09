@@ -1,5 +1,5 @@
-<div class="bg-white rounded-lg shadow p-6">
-    <h3 class="font-semibold mb-4">Client Context Lookup</h3>
+<flux:card size="sm">
+    <flux:heading level="3">Client Context Lookup</flux:heading>
 
     <form wire:submit="lookup" class="space-y-4">
         <flux:input
@@ -14,30 +14,36 @@
     </form>
 
     @if($foundCustomer)
-        <div class="mt-6 pt-6 border-t space-y-3">
+        <flux:separator class="my-6" />
+
+        <div class="space-y-3">
             <div>
-                <div class="text-sm text-gray-600">Company</div>
-                <div class="font-medium">{{ $foundCustomer->company_name }}</div>
+                <flux:text variant="subtle">Company</flux:text>
+                <flux:text variant="strong">{{ $foundCustomer->company_name }}</flux:text>
             </div>
 
             <div>
-                <div class="text-sm text-gray-600">Plan Tier</div>
-                <flux:badge :color="$foundCustomer->plan->color()">
-                    {{ $foundCustomer->plan->value }}
-                </flux:badge>
+                <flux:text variant="subtle">Plan Tier</flux:text>
+                <div>
+                    <flux:badge :color="$foundCustomer->plan->color()">
+                        {{ $foundCustomer->plan->value }}
+                    </flux:badge>
+                </div>
             </div>
 
             <div>
-                <div class="text-sm text-gray-600">Status</div>
-                <flux:badge :color="$foundCustomer->status->color()">
-                    {{ $foundCustomer->status->label() }}
-                </flux:badge>
+                <flux:text variant="subtle">Status</flux:text>
+                <div>
+                    <flux:badge :color="$foundCustomer->status->color()">
+                        {{ $foundCustomer->status->label() }}
+                    </flux:badge>
+                </div>
             </div>
 
             <div>
-                <div class="text-sm text-gray-600">Last Invoice</div>
-                <div>{{ $foundCustomer->last_invoice_date?->format('M d, Y') ?? 'N/A' }}</div>
+                <flux:text variant="subtle">Last Invoice</flux:text>
+                <flux:text>{{ $foundCustomer->last_invoice_date?->format('M d, Y') ?? 'N/A' }}</flux:text>
             </div>
         </div>
     @endif
-</div>
+</flux:card>

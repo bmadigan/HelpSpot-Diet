@@ -1,6 +1,6 @@
 <div class="space-y-6">
     <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold">Support Tickets</h1>
+        <flux:heading level="1" size="xl">Support Tickets</flux:heading>
 
         <flux:input
             wire:model.live.debounce.300ms="search"
@@ -10,28 +10,47 @@
         />
     </div>
 
-    <flux:tabs wire:model="filter">
-        <flux:tab name="all">All Tickets</flux:tab>
-        <flux:tab name="sla">SLA at Risk</flux:tab>
-        <flux:tab name="no-update">No Update (48h)</flux:tab>
-        <flux:tab name="vip">VIP (Enterprise)</flux:tab>
+    <flux:tabs>
+        @if($filter==='all')
+            <flux:tab name="all" wire:click="setFilter('all')" selected>All Tickets</flux:tab>
+        @else
+            <flux:tab name="all" wire:click="setFilter('all')">All Tickets</flux:tab>
+        @endif
+
+        @if($filter==='sla')
+            <flux:tab name="sla" wire:click="setFilter('sla')" selected>SLA at Risk</flux:tab>
+        @else
+            <flux:tab name="sla" wire:click="setFilter('sla')">SLA at Risk</flux:tab>
+        @endif
+
+        @if($filter==='no-update')
+            <flux:tab name="no-update" wire:click="setFilter('no-update')" selected>No Update (48h)</flux:tab>
+        @else
+            <flux:tab name="no-update" wire:click="setFilter('no-update')">No Update (48h)</flux:tab>
+        @endif
+
+        @if($filter==='vip')
+            <flux:tab name="vip" wire:click="setFilter('vip')" selected>VIP (Enterprise)</flux:tab>
+        @else
+            <flux:tab name="vip" wire:click="setFilter('vip')">VIP (Enterprise)</flux:tab>
+        @endif
     </flux:tabs>
 
-    <flux:table>
-        <flux:table.columns>
-            <flux:table.column>Subject</flux:table.column>
-            <flux:table.column>Requester</flux:table.column>
-            <flux:table.column>Tier</flux:table.column>
-            <flux:table.column>Status</flux:table.column>
-            <flux:table.column>Last Reply</flux:table.column>
-            <flux:table.column>Actions</flux:table.column>
-        </flux:table.columns>
+        <flux:table>
+            <flux:table.columns>
+                <flux:table.column>Subject</flux:table.column>
+                <flux:table.column>Requester</flux:table.column>
+                <flux:table.column>Tier</flux:table.column>
+                <flux:table.column>Status</flux:table.column>
+                <flux:table.column>Last Reply</flux:table.column>
+                <flux:table.column>Actions</flux:table.column>
+            </flux:table.columns>
 
         <flux:table.rows>
             @forelse($this->tickets as $ticket)
                 <flux:table.row :key="$ticket->id" wire:key="ticket-{{ $ticket->id }}">
                     <flux:table.cell>
-                        <div class="font-medium">{{ $ticket->subject }}</div>
+                        <flux:text inline variant="strong">{{ $ticket->subject }}</flux:text>
                     </flux:table.cell>
                     <flux:table.cell>
                         <div>{{ $ticket->requester_email }}</div>
@@ -42,7 +61,7 @@
                                 {{ $ticket->tier->value }}
                             </flux:badge>
                         @else
-                            <span class="text-gray-400">Unknown</span>
+                            <flux:text inline variant="subtle">Unknown</flux:text>
                         @endif
                     </flux:table.cell>
                     <flux:table.cell>
@@ -66,8 +85,8 @@
             @empty
                 <flux:table.row>
                     <flux:table.cell colspan="6">
-                        <div class="text-center py-8 text-gray-500">
-                            No tickets found
+                        <div class="text-center py-8">
+                            <flux:text>No tickets found</flux:text>
                         </div>
                     </flux:table.cell>
                 </flux:table.row>

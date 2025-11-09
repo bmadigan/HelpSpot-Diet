@@ -20,7 +20,7 @@ class SslTriage extends Component
         $this->analysis = app(AnalyzeSslOutput::class)($this->opensslOutput);
     }
 
-    public function reset(): void
+    public function resetTool(): void
     {
         $this->opensslOutput = '';
         $this->analysis = null;

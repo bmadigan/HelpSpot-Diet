@@ -9,25 +9,25 @@
         <title>{{ $title ?? 'HelpSpot Diet' }}</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @fluxStyles
+        @fluxAppearance
     </head>
-    <body class="min-h-screen bg-gray-50">
-        <flux:header container>
-            <flux:navbar>
-                <a href="{{ route('tickets.index') }}" class="text-xl font-bold text-gray-900">
-                    HelpSpot Diet
-                </a>
+    <body class="min-h-screen bg-gray-50 dark:bg-zinc-900">
+        <flux:accent color="blue">
+            <flux:header container>
+                <flux:navbar>
+                    <flux:brand name="HelpSpot Diet" href="{{ route('tickets.index') }}" />
 
-                <flux:navlist>
-                    <flux:navlist.item href="{{ route('tickets.index') }}">Tickets</flux:navlist.item>
-                </flux:navlist>
-            </flux:navbar>
-        </flux:header>
+                    <flux:navlist>
+                        <flux:navlist.item href="{{ route('tickets.index') }}">Tickets</flux:navlist.item>
+                    </flux:navlist>
+                </flux:navbar>
+            </flux:header>
 
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {{ $slot }}
-        </main>
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {{ $slot }}
+            </main>
 
-        @fluxScripts
+            @fluxScripts
+        </flux:accent>
     </body>
 </html>
