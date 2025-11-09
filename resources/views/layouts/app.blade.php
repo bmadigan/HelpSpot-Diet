@@ -17,9 +17,10 @@
                 <flux:navbar>
                     <flux:brand name="HelpSpot Diet" href="{{ route('tickets.index') }}" />
 
-                    <flux:navlist>
-                        <flux:navlist.item href="{{ route('tickets.index') }}">Tickets</flux:navlist.item>
-                    </flux:navlist>
+                <flux:navlist>
+                    <flux:navlist.item href="{{ route('dashboard') }}">Dashboard</flux:navlist.item>
+                    <flux:navlist.item href="{{ route('tickets.index') }}">Tickets</flux:navlist.item>
+                </flux:navlist>
                 </flux:navbar>
             </flux:header>
 
