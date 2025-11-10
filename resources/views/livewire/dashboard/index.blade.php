@@ -19,6 +19,17 @@
                 </div>
                 <flux:icon icon="arrow-trending-up" variant="outline" class="size-10 text-indigo-500/80 dark:text-indigo-400/80" />
             </div>
+
+            <div class="mt-3">
+                <flux:chart :value="$this->sparkRequests">
+                    <flux:chart.viewport class="h-16">
+                        <flux:chart.svg>
+                            <flux:chart.area field="count" class="text-indigo-300/50 dark:text-indigo-400/20" />
+                            <flux:chart.line field="count" class="text-indigo-500 dark:text-indigo-400" />
+                        </flux:chart.svg>
+                    </flux:chart.viewport>
+                </flux:chart>
+            </div>
         </flux:card>
 
         <flux:card class="relative overflow-hidden bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-transparent">
@@ -98,24 +109,52 @@
                 </div>
                 <flux:icon icon="chat-bubble-left-right" variant="outline" class="size-10 text-emerald-500/80 dark:text-emerald-400/80" />
             </div>
+            <div class="mt-3">
+                <flux:chart :value="$this->sparkReplies">
+                    <flux:chart.viewport class="h-16">
+                        <flux:chart.svg>
+                            <flux:chart.area field="count" class="text-emerald-300/40 dark:text-emerald-400/20" />
+                            <flux:chart.line field="count" class="text-emerald-500 dark:text-emerald-400" />
+                        </flux:chart.svg>
+                    </flux:chart.viewport>
+                </flux:chart>
+            </div>
         </flux:card>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <flux:card class="lg:col-span-2">
-            <flux:heading size="lg" class="mb-4">Requests Over Time (30 days)</flux:heading>
+            <flux:heading size="lg" class="mb-4">Volume Over Time (30 days)</flux:heading>
 
-            <flux:chart :value="$this->requestsOverTime">
+            <flux:chart :value="$this->requestsAndRepliesOverTime">
                 <flux:chart.viewport class="h-64">
                     <flux:chart.svg>
-                        <flux:chart.area field="count" class="text-blue-200/70 dark:text-blue-400/20" />
-                        <flux:chart.line field="count" class="text-blue-500 dark:text-blue-400" />
-                        <flux:chart.point field="count" />
+                        <flux:chart.area field="requests" class="text-blue-200/60 dark:text-blue-400/20" />
+                        <flux:chart.line field="requests" class="text-blue-500 dark:text-blue-400" />
+                        <flux:chart.point field="requests" />
+
+                        <flux:chart.line field="replies" class="text-emerald-500 dark:text-emerald-400" />
+                        <flux:chart.point field="replies" />
                     </flux:chart.svg>
 
                     <flux:chart.axis axis="x" />
                 </flux:chart.viewport>
             </flux:chart>
+
+            <div class="mt-3 flex items-center gap-6">
+                <flux:chart.legend>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block size-2 rounded-full bg-blue-500"></span>
+                        <flux:text inline variant="strong">Requests</flux:text>
+                    </div>
+                </flux:chart.legend>
+                <flux:chart.legend>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block size-2 rounded-full bg-emerald-500"></span>
+                        <flux:text inline variant="strong">Replies</flux:text>
+                    </div>
+                </flux:chart.legend>
+            </div>
         </flux:card>
 
         <flux:card>

@@ -71,6 +71,88 @@ class Index extends Component
     }
 
     #[Computed]
+    public function requestsAndRepliesOverTime(): array
+    {
+        $from = now()->subDays(30)->startOfDay();
+
+        $reqRows = Ticket::query()
+            ->where('created_at', '>=', $from)
+            ->selectRaw('date(created_at) as date, count(*) as requests')
+            ->groupBy(DB::raw('date(created_at)'))
+            ->pluck('requests', 'date');
+
+        $repRows = TicketReply::query()
+            ->where('created_at', '>=', $from)
+            ->selectRaw('date(created_at) as date, count(*) as replies')
+            ->groupBy(DB::raw('date(created_at)'))
+            ->pluck('replies', 'date');
+
+        $data = [];
+        $cursor = $from->clone();
+        while ($cursor->lte(now())) {
+            $date = $cursor->toDateString();
+            $data[] = [
+                'date' => $date,
+                'requests' => (int) ($reqRows[$date] ?? 0),
+                'replies' => (int) ($repRows[$date] ?? 0),
+            ];
+            $cursor->addDay();
+        }
+
+        return $data;
+    }
+
+    #[Computed]
+    public function sparkRequests(): array
+    {
+        $from = now()->subDays(14)->startOfDay();
+
+        $rows = Ticket::query()
+            ->where('created_at', '>=', $from)
+            ->selectRaw('date(created_at) as date, count(*) as count')
+            ->groupBy(DB::raw('date(created_at)'))
+            ->pluck('count', 'date');
+
+        $data = [];
+        $cursor = $from->clone();
+        while ($cursor->lte(now())) {
+            $date = $cursor->toDateString();
+            $data[] = [
+                'date' => $date,
+                'count' => (int) ($rows[$date] ?? 0),
+            ];
+            $cursor->addDay();
+        }
+
+        return $data;
+    }
+
+    #[Computed]
+    public function sparkReplies(): array
+    {
+        $from = now()->subDays(14)->startOfDay();
+
+        $rows = TicketReply::query()
+            ->where('created_at', '>=', $from)
+            ->selectRaw('date(created_at) as date, count(*) as count')
+            ->groupBy(DB::raw('date(created_at)'))
+            ->pluck('count', 'date');
+
+        $data = [];
+        $cursor = $from->clone();
+        while ($cursor->lte(now())) {
+            $date = $cursor->toDateString();
+            $data[] = [
+                'date' => $date,
+                'count' => (int) ($rows[$date] ?? 0),
+            ];
+            $cursor->addDay();
+        }
+
+        return $data;
+    }
+
+    #[Computed]
     public function statusBreakdown(): array
     {
         return [
