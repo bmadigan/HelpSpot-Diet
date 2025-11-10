@@ -31,10 +31,35 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         $tickets->each(function ($ticket) {
-            \App\Models\TicketReply::factory()
-                ->count(rand(0, 3))
-                ->for($ticket)
-                ->create();
+            $replyCount = fake()->randomElement([0, 1, 1, 2, 2, 3, 4]);
+            $cursor = $ticket->created_at ?? now()->subDays(rand(1, 30));
+
+            for ($i = 0; $i < $replyCount; $i++) {
+                $cursor = (clone $cursor)->addMinutes(rand(30, 60 * 24));
+
+                $isStaff = fake()->boolean(60);
+
+                $reply = \App\Models\TicketReply::factory()
+                    ->for($ticket)
+                    ->state([
+                        'author_email' => $isStaff ? 'support@helpspot.com' : $ticket->requester_email,
+                        'is_staff' => $isStaff,
+                    ])
+                    ->create();
+
+                $reply->created_at = $cursor;
+                $reply->updated_at = $cursor;
+                $reply->saveQuietly();
+            }
+
+            $lastReply = $ticket->replies()->latest('created_at')->first();
+            $lastCustomerReply = $ticket->replies()->where('is_staff', false)->latest('created_at')->first();
+
+            $ticket->forceFill([
+                'last_public_reply_at' => $lastReply?->created_at ?? $ticket->last_public_reply_at,
+                'last_customer_reply_at' => $lastCustomerReply?->created_at,
+                'updated_at' => $lastReply?->created_at ?? $ticket->updated_at,
+            ])->saveQuietly();
         });
 
         // A few SLA at risk tickets (older last reply)
@@ -50,7 +75,36 @@ class DatabaseSeeder extends Seeder
                     'last_public_reply_at' => now()->subDays(rand(2, 5)),
                 ];
             })
-            ->create();
+            ->create()
+            ->each(function ($ticket) {
+                $replyCount = rand(1, 4);
+                $cursor = $ticket->created_at ?? now()->subDays(5);
+
+                for ($i = 0; $i < $replyCount; $i++) {
+                    $cursor = (clone $cursor)->addHours(rand(2, 24));
+
+                    $isStaff = fake()->boolean(60);
+                    $reply = \App\Models\TicketReply::factory()
+                        ->for($ticket)
+                        ->state([
+                            'author_email' => $isStaff ? 'support@helpspot.com' : $ticket->requester_email,
+                            'is_staff' => $isStaff,
+                        ])
+                        ->create();
+
+                    $reply->created_at = $cursor;
+                    $reply->updated_at = $cursor;
+                    $reply->saveQuietly();
+                }
+
+                $lastReply = $ticket->replies()->latest('created_at')->first();
+                $lastCustomerReply = $ticket->replies()->where('is_staff', false)->latest('created_at')->first();
+                $ticket->forceFill([
+                    'last_public_reply_at' => $lastReply?->created_at,
+                    'last_customer_reply_at' => $lastCustomerReply?->created_at,
+                    'updated_at' => $lastReply?->created_at,
+                ])->saveQuietly();
+            });
 
         // A couple VIP/Enterprise tickets
         \App\Models\Ticket::factory()
@@ -63,7 +117,36 @@ class DatabaseSeeder extends Seeder
                     'tier' => 'Enterprise',
                 ];
             })
-            ->create();
+            ->create()
+            ->each(function ($ticket) {
+                $replyCount = rand(2, 6);
+                $cursor = $ticket->created_at ?? now()->subDays(15);
+
+                for ($i = 0; $i < $replyCount; $i++) {
+                    $cursor = (clone $cursor)->addHours(rand(4, 36));
+
+                    $isStaff = fake()->boolean(60);
+                    $reply = \App\Models\TicketReply::factory()
+                        ->for($ticket)
+                        ->state([
+                            'author_email' => $isStaff ? 'support@helpspot.com' : $ticket->requester_email,
+                            'is_staff' => $isStaff,
+                        ])
+                        ->create();
+
+                    $reply->created_at = $cursor;
+                    $reply->updated_at = $cursor;
+                    $reply->saveQuietly();
+                }
+
+                $lastReply = $ticket->replies()->latest('created_at')->first();
+                $lastCustomerReply = $ticket->replies()->where('is_staff', false)->latest('created_at')->first();
+                $ticket->forceFill([
+                    'last_public_reply_at' => $lastReply?->created_at,
+                    'last_customer_reply_at' => $lastCustomerReply?->created_at,
+                    'updated_at' => $lastReply?->created_at,
+                ])->saveQuietly();
+            });
 
         // Add 100 additional realistic help desk tickets (mix of new/old for reporting)
         \App\Models\Ticket::factory()
@@ -85,6 +168,36 @@ class DatabaseSeeder extends Seeder
                     'priority' => fake()->randomElement(['low', 'normal', 'high', 'urgent']),
                 ];
             })
-            ->create();
+            ->create()
+            ->each(function ($ticket) {
+                // Weighted distribution of replies for realism
+                $replyCount = fake()->randomElement([0, 0, 1, 1, 1, 2, 2, 3, 3, 4, 5, 6, 7]);
+                $cursor = $ticket->created_at ?? now()->subDays(rand(1, 180));
+
+                for ($i = 0; $i < $replyCount; $i++) {
+                    $cursor = (clone $cursor)->addMinutes(rand(15, 60 * 72));
+
+                    $isStaff = fake()->boolean(60);
+                    $reply = \App\Models\TicketReply::factory()
+                        ->for($ticket)
+                        ->state([
+                            'author_email' => $isStaff ? 'support@helpspot.com' : $ticket->requester_email,
+                            'is_staff' => $isStaff,
+                        ])
+                        ->create();
+
+                    $reply->created_at = $cursor;
+                    $reply->updated_at = $cursor;
+                    $reply->saveQuietly();
+                }
+
+                $lastReply = $ticket->replies()->latest('created_at')->first();
+                $lastCustomerReply = $ticket->replies()->where('is_staff', false)->latest('created_at')->first();
+                $ticket->forceFill([
+                    'last_public_reply_at' => $lastReply?->created_at ?? $ticket->last_public_reply_at,
+                    'last_customer_reply_at' => $lastCustomerReply?->created_at,
+                    'updated_at' => max($ticket->updated_at, $lastReply?->created_at ?? $ticket->updated_at),
+                ])->saveQuietly();
+            });
     }
 }
