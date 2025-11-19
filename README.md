@@ -1,59 +1,89 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1 align="center">HelpSpot Diet</h1>
+
+<p align="center">A lightweight help desk demo built with Laravel 12, Livewire v4, and Flux UI. Browse a dashboard of key metrics, triage the inbox, and reply to tickets – backed by seeded data.</p>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/assets/dashboard-screenshot.png" alt="HelpSpot Diet dashboard" width="920" />
+  <br/>
+  <em>Dashboard view with ticket metrics and trends</em>
+  <br/><br/>
 </p>
 
-## About Laravel
+## What’s inside
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel 12 + PHP 8.4
+- Livewire v4 + Flux UI Pro components
+- SQLite by default (simple local setup)
+- Seeders that generate realistic tickets, customers, and replies
+- Vite + Tailwind pipeline for assets
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Quick start (TL;DR)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1) Install backend deps
 
-## Learning Laravel
+```
+composer install
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+2) Create your env and app key
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+cp .env.example .env
+php artisan key:generate
+```
 
-## Laravel Sponsors
+3) Use SQLite (default) and create the database file
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+mkdir -p database && touch database/database.sqlite
+```
 
-### Premium Partners
+4) Migrate and seed demo data
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```
+php artisan migrate --seed
+```
 
-## Contributing
+5) Install frontend deps and start Vite
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+npm install
+npm run dev
+```
 
-## Code of Conduct
+6) Run the app
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+php artisan serve
+```
 
-## Security Vulnerabilities
+Now visit the server URL from the output to see the dashboard and tickets.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Tip: Prefer one command? There’s a convenience script:
 
-## License
+```
+composer run dev
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+That runs the PHP server, queue worker, logs, and Vite together.
+
+## Full setup details
+
+- Environment
+  - PHP 8.4+, Composer, Node 18+ (or 20+) and npm.
+  - Defaults to SQLite. If you’d rather use MySQL/Postgres, update your `.env` and create the database before running migrations.
+
+- Database
+  - Fresh start at any time with: `php artisan migrate:fresh --seed`.
+  - Seeders generate customers, tickets, and replies across realistic time ranges so the dashboard charts look real.
+
+- Frontend
+  - Development: `npm run dev` (hot reloading).
+  - Production build: `npm run build`.
+  - If UI changes aren’t showing, re-run `npm run dev` or `npm run build`.
+## Troubleshooting
+
+- “Unable to locate file in Vite manifest”: run `npm run build` (or keep `npm run dev` running) and reload.
+- Blank data or empty charts: ensure `database/database.sqlite` exists and re-run `php artisan migrate --seed`.
+- CSS/JS not updating: stop/restart `npm run dev`.
+
